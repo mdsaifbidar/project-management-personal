@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { SyncOp, SyncTable, applyOps, cloudEnabled } from "@/lib/server/db";
+import { guardDataRoute } from "@/lib/server/guard";
 
 export const dynamic = "force-dynamic";
 
@@ -22,6 +23,8 @@ function isOp(o: unknown): o is SyncOp {
 /** Apply a batch of changes from a client. */
 export async function POST(req: Request) {
   if (!cloudEnabled()) return NextResponse.json({ error: "No database configured" }, { status: 400 });
+  const blocked = await guardDataRoute();
+  if (blocked) return blocked;
   const text = await req.text();
   if (text.length > MAX_BYTES) return NextResponse.json({ error: "Payload too large" }, { status: 413 });
   let body: unknown;

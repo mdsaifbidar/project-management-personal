@@ -99,8 +99,11 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const ref = useRef(state);
   const history = useRef<AppState[]>([]);
 
-  // Cloud sync bookkeeping.
-  const cloud = useRef(false);
+  // Cloud sync bookkeeping. `cloud` is null until the server answers: edits made
+  // while connecting are queued and uploaded once cloud mode is confirmed.
+  const cloud = useRef<boolean | null>(null);
+  /** Bumped after every successful upload; lets a slow pull detect it is stale. */
+  const uploads = useRef(0);
   const pending = useRef<SyncOp[]>([]);
   const flushing = useRef(false);
   const flushTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -115,7 +118,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const flush = useCallback(async () => {
-    if (!cloud.current || flushing.current) return;
+    if (cloud.current !== true || flushing.current) return;
     if (flushTimer.current) {
       clearTimeout(flushTimer.current);
       flushTimer.current = null;
@@ -135,6 +138,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       pending.current = pending.current.filter((o) => !sent.has(o));
       savePending(pending.current);
       retryDelay.current = 2000;
+      uploads.current++;
       rev.current = null; // our own write changed the server rev
       setLastSynced(new Date());
       if (pending.current.length) void flush();
@@ -150,9 +154,11 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
 
   const queue = useCallback(
     (ops: SyncOp[]) => {
-      if (!cloud.current || !ops.length) return;
+      if (cloud.current === false || !ops.length) return;
       pending.current = compact([...pending.current, ...ops]);
       savePending(pending.current);
+      // Still connecting: keep the ops; the first pull replays and uploads them.
+      if (cloud.current === null) return;
       setSyncStatus("saving");
       if (flushTimer.current) clearTimeout(flushTimer.current);
       flushTimer.current = setTimeout(() => void flush(), 600);
@@ -163,9 +169,12 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   /** Pull the server copy; keep unsynced local edits on top of it. */
   const pull = useCallback(
     async (initial = false) => {
+      const uploadsBefore = uploads.current;
       const remote = await fetchRemote();
       if (remote.kind === "local") {
         cloud.current = false;
+        pending.current = [];
+        savePending([]);
         setSyncStatus("local");
         return;
       }
@@ -182,6 +191,12 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       if (initial && remote.empty && !isEmptyState(ref.current)) {
         // First connection: upload everything this browser already has.
         queue(diffStates(storage.emptyState(), ref.current));
+        return;
+      }
+      // An upload finished (or is running) while this snapshot was in flight, so
+      // it may predate our own writes. Drop it and pull again shortly.
+      if (!initial && (flushing.current || uploads.current !== uploadsBefore)) {
+        setTimeout(() => void pull(), 1500);
         return;
       }
       if (!initial && remote.rev === rev.current) {
