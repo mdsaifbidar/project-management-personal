@@ -349,6 +349,15 @@ export default function ItemModal() {
             </Field>
           </div>
 
+          {!isProject && form.scheduledDate && form.scheduledTime && a.settings.reminders.enabled ? (
+            <p className="-mt-1 text-[12px] text-stone-500 dark:text-stone-400">
+              🔔 Reminder{" "}
+              {a.settings.reminders.leadMinutes
+                ? `${a.settings.reminders.leadMinutes} min before${a.settings.reminders.atStart ? " and at start" : ""}`
+                : "when it starts"}
+            </p>
+          ) : null}
+
           <div className="flex flex-wrap items-center gap-1.5">
             {ESTIMATES.map((m) => (
               <Chip

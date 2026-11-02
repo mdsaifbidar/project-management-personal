@@ -49,7 +49,8 @@ interface UIValue {
 
   // Toasts
   toasts: Toast[];
-  toast: (message: string, action?: ToastAction) => void;
+  /** durationMs overrides the default (2.6 s, or 5 s with an action). */
+  toast: (message: string, action?: ToastAction, durationMs?: number) => void;
   dismissToast: (id: number) => void;
 }
 
@@ -94,10 +95,10 @@ export function UIProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const toast = useCallback(
-    (message: string, action?: ToastAction) => {
+    (message: string, action?: ToastAction, durationMs?: number) => {
       const id = ++counter.current;
       setToasts((t) => [...t.slice(-2), { id, message, action }]);
-      setTimeout(() => dismissToast(id), action ? 5000 : 2600);
+      setTimeout(() => dismissToast(id), durationMs ?? (action ? 5000 : 2600));
     },
     [dismissToast]
   );

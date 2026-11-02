@@ -129,6 +129,7 @@ export const COLORS: Record<
 export const COLOR_KEYS = Object.keys(COLORS) as ColorKey[];
 
 export const DEFAULT_SETTINGS: Settings = {
+  reminders: { enabled: true, leadMinutes: 10, atStart: true, digest: true, digestTime: "08:30" },
   wipLimit: 3,
   enforceWip: true,
   types: DEFAULT_TYPES,

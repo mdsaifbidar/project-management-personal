@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import EmptyState from "@/components/EmptyState";
 import ItemCard from "@/components/ItemCard";
 import QuickCapture from "@/components/QuickCapture";
+import ReminderPrompt from "@/components/ReminderPrompt";
 import Backlog from "@/components/planner/Backlog";
 import BigThree from "@/components/planner/BigThree";
 import Journal from "@/components/planner/Journal";
@@ -75,6 +76,8 @@ export default function TodayPage() {
         <Stat label="Done" value={String(doneCount)} sub={doneCount ? "nice work" : "let's go"} />
         <Stat label="Focus time" value={shortMinutes(stats.trackedMinutes)} sub="tracked" />
       </div>
+
+      {isToday ? <ReminderPrompt /> : null}
 
       <QuickCapture
         defaults={{ scheduledDate: key, status: "NEXT", type: "TASK" }}

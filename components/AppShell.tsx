@@ -7,6 +7,7 @@ import { useUI } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 import ItemModal from "./ItemModal";
 import MobileNav from "./MobileNav";
+import ReminderEngine from "./ReminderEngine";
 import { NAV_ITEMS } from "./nav-items";
 import SearchOverlay from "./SearchOverlay";
 import ShortcutHelp from "./ShortcutHelp";
@@ -105,6 +106,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       <TemplatePicker />
       <WipPrompt />
       <ShortcutHelp />
+      <ReminderEngine />
       <Toasts />
     </div>
   );

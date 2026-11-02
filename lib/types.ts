@@ -152,7 +152,20 @@ export interface Template {
   tasks: TemplateTask[];
 }
 
+export interface ReminderSettings {
+  enabled: boolean;
+  /** Minutes before a task's start time; 0 = only at start. */
+  leadMinutes: number;
+  /** Also notify at the start time itself. */
+  atStart: boolean;
+  /** Morning summary of today's plan. */
+  digest: boolean;
+  /** "HH:MM" */
+  digestTime: string;
+}
+
 export interface Settings {
+  reminders: ReminderSettings;
   wipLimit: number;
   enforceWip: boolean;
   types: TypeDef[];

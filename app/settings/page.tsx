@@ -3,6 +3,7 @@
 import { useMemo, useRef, useState } from "react";
 import ConfirmDialog from "@/components/ConfirmDialog";
 import PageHeader from "@/components/PageHeader";
+import ReminderSettings from "@/components/ReminderSettings";
 import Select from "@/components/pickers/Select";
 import Stepper from "@/components/pickers/Stepper";
 import Switch from "@/components/pickers/Switch";
@@ -68,6 +69,10 @@ export default function SettingsPage() {
             </>
           ) : null}
         </div>
+      </Section>
+
+      <Section title="Reminders" desc="Get notified before tasks that have a time on your plan, plus a morning summary.">
+        <ReminderSettings />
       </Section>
 
       <Section title="Workflow" desc="Limits and defaults that shape your day.">

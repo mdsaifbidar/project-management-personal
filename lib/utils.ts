@@ -325,7 +325,17 @@ export function sanitizeSettings(raw: unknown): Settings {
     }
   }
   const dayStartHour = clampInt(r.dayStartHour, 0, 22, d.dayStartHour);
+  const rm = (r.reminders && typeof r.reminders === "object" ? r.reminders : {}) as Record<string, unknown>;
+  const hhmm = (v: unknown, fb: string) => (typeof v === "string" && /^([01]\d|2[0-3]):[0-5]\d$/.test(v) ? v : fb);
+  const bool = (v: unknown, fb: boolean) => (typeof v === "boolean" ? v : fb);
   return {
+    reminders: {
+      enabled: bool(rm.enabled, d.reminders.enabled),
+      leadMinutes: clampInt(rm.leadMinutes, 0, 240, d.reminders.leadMinutes),
+      atStart: bool(rm.atStart, d.reminders.atStart),
+      digest: bool(rm.digest, d.reminders.digest),
+      digestTime: hhmm(rm.digestTime, d.reminders.digestTime),
+    },
     wipLimit: clampInt(r.wipLimit, 1, 20, d.wipLimit),
     enforceWip: typeof r.enforceWip === "boolean" ? r.enforceWip : d.enforceWip,
     types: sanitizeTypes(r.types ?? d.types),

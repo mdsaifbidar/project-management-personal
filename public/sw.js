@@ -1,6 +1,6 @@
 /* Decision Inbox service worker: offline app shell. Data never goes through here
    (API calls always hit the network; the app keeps its own offline copy). */
-const CACHE = "di-shell-v1";
+const CACHE = "di-shell-v2";
 const SHELL = ["/today", "/planner", "/", "/manifest.webmanifest", "/icons/icon-192.png"];
 
 self.addEventListener("install", (e) => {
@@ -18,6 +18,19 @@ self.addEventListener("activate", (e) => {
       .keys()
       .then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))))
       .then(() => self.clients.claim())
+  );
+});
+
+// Reminder / pomodoro notification tapped: focus an open app window, else open one.
+self.addEventListener("notificationclick", (e) => {
+  e.notification.close();
+  const url = (e.notification.data && e.notification.data.url) || "/today";
+  e.waitUntil(
+    self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((wins) => {
+      const win = wins.find((w) => new URL(w.url).origin === self.location.origin);
+      if (win) return win.focus().then((w) => (w && "navigate" in w ? w.navigate(url) : w));
+      return self.clients.openWindow(url);
+    })
   );
 });
 
