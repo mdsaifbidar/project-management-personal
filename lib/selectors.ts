@@ -1,7 +1,7 @@
 import { PRIORITY_WEIGHT } from "./constants";
 import { addDays, isoToKey } from "./dates";
 import { occurrencesBetween } from "./recurrence";
-import { Goal, Item } from "./types";
+import { Goal, Item, PeriodNote } from "./types";
 import { projectProgress } from "./utils";
 
 export const isOpen = (i: Item) => i.status !== "DONE" && i.status !== "JAIL";
@@ -182,6 +182,19 @@ export function projectEstimate(project: Item, items: Item[]): { total: number; 
     .filter((i) => i.status !== "DONE")
     .reduce((s, i) => s + (i.estimatedMinutes ?? 0), 0);
   return { total, remaining };
+}
+
+/** True when a day's note has something written (Big 3 picks alone don't count). */
+export function noteHasContent(n?: PeriodNote): n is PeriodNote {
+  return !!n && (!!n.notes.trim() || !!n.wins.trim() || !!n.improve.trim() || !!n.mood || !!n.energy);
+}
+
+/** One-line preview of a note: first line of notes, else wins, else improvements. */
+export function noteSummary(n: PeriodNote): string {
+  const first = [n.notes, n.wins && `🏆 ${n.wins}`, n.improve && `🔧 ${n.improve}`]
+    .map((s) => (s || "").trim())
+    .find(Boolean);
+  return (first ?? "").split("\n")[0];
 }
 
 export function allTags(items: Item[]): string[] {

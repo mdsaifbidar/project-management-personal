@@ -5,8 +5,8 @@ import { PeriodNote } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { Card } from "../primitives";
 
-const MOODS = ["😞", "😕", "😐", "🙂", "😄"];
-const ENERGY = ["😴", "🥱", "🙂", "💪", "⚡"];
+export const MOODS = ["😞", "😕", "😐", "🙂", "😄"];
+export const ENERGY = ["😴", "🥱", "🙂", "💪", "⚡"];
 
 /** Notes + reflection for any period key (day, week, month, quarter, year). */
 export default function Journal({

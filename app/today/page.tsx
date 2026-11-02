@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import EmptyState from "@/components/EmptyState";
 import ItemCard from "@/components/ItemCard";
 import QuickCapture from "@/components/QuickCapture";
@@ -12,6 +12,7 @@ import TimeGrid from "@/components/planner/TimeGrid";
 import { Card, SectionLabel, Segmented, Count } from "@/components/primitives";
 import { EMPTY_STATES } from "@/lib/constants";
 import { useToday } from "@/lib/hooks";
+import { todayKey } from "@/lib/dates";
 import { calendarEntries, overdueItems, periodStats, plannedMinutes } from "@/lib/selectors";
 import { useStore } from "@/lib/store";
 import { cn, shortMinutes } from "@/lib/utils";
@@ -23,6 +24,16 @@ export default function TodayPage() {
   const [layout, setLayout] = useState<"timeline" | "list">("timeline");
   const key = day ?? today;
   const isToday = key === today;
+
+  // Deep link from calendar note markers: /today?date=2026-11-15
+  useEffect(() => {
+    const d = new URLSearchParams(window.location.search).get("date");
+    if (d && /^\d{4}-\d{2}-\d{2}$/.test(d)) {
+      setDay(d === todayKey() ? null : d);
+      // Wait for the page to lay out, then bring the notes card into view.
+      setTimeout(() => document.getElementById("day-notes")?.scrollIntoView({ block: "start", behavior: "smooth" }), 150);
+    }
+  }, []);
 
   const entries = useMemo(() => calendarEntries(items, key, key), [items, key]);
   const stats = useMemo(() => periodStats(items, key, key), [items, key]);
@@ -110,7 +121,9 @@ export default function TodayPage() {
               </section>
             )}
 
-            <Journal periodKey={key} title={isToday ? "Today's notes" : "Notes for this day"} />
+            <div id="day-notes" className="scroll-mt-6">
+              <Journal periodKey={key} title={isToday ? "Today's notes" : "Notes for this day"} />
+            </div>
           </div>
 
           <div className="space-y-5 lg:sticky lg:top-6 lg:self-start">

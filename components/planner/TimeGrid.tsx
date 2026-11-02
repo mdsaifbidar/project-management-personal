@@ -12,6 +12,7 @@ import { Item } from "@/lib/types";
 import { cn, shortMinutes } from "@/lib/utils";
 import { PRIORITY_DOT } from "../Badge";
 import Checkbox from "../Checkbox";
+import NoteMarker from "./NoteMarker";
 
 const SNAP = 15;
 const DEFAULT_BLOCK = 30;
@@ -166,11 +167,11 @@ export default function TimeGrid({
               const pct = Math.min(100, (load / dailyCapacityMinutes) * 100);
               const over = load > dailyCapacityMinutes;
               return (
+                <div key={d} className="min-w-0 border-l border-stone-100 dark:border-stone-800">
                 <button
-                  key={d}
                   onClick={() => onDayClick?.(d)}
                   className={cn(
-                    "border-l border-stone-100 px-2 py-2 text-left transition dark:border-stone-800",
+                    "block w-full px-2 py-2 text-left transition",
                     onDayClick && "hover:bg-stone-50 dark:hover:bg-stone-800/50"
                   )}
                 >
@@ -196,6 +197,8 @@ export default function TimeGrid({
                     </span>
                   </div>
                 </button>
+                <NoteMarker dateKey={d} variant="line" className="mx-1.5 mb-1.5 -mt-0.5" />
+                </div>
               );
             })}
           </div>

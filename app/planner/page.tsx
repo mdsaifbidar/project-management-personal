@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Backlog from "@/components/planner/Backlog";
+import Journal from "@/components/planner/Journal";
 import MonthView from "@/components/planner/MonthView";
 import PeriodNav from "@/components/planner/PeriodNav";
 import TimeGrid from "@/components/planner/TimeGrid";
@@ -125,11 +126,18 @@ export default function PlannerPage() {
             )}
             <p className="mt-2 text-[11px] text-stone-400">
               {view === "MONTH"
-                ? "Drag tasks between days · double-click a day to add · click a date to open it."
+                ? narrow
+                  ? "Tap a date to open the day · 📝 = notes · dots = tasks."
+                  : "Drag tasks between days · double-click a day to add · click a date to open it · 📝 opens that day's notes."
                 : view === "YEAR"
                   ? "Shading = planned + completed items. Click a day or month to zoom in."
                   : "Click an empty slot to add · drag to move · drag the bottom edge to resize · dashed = upcoming repeats."}
             </p>
+            {view === "DAY" ? (
+              <div className="mt-4">
+                <Journal periodKey={anchor} title={anchor === todayKey() ? "Today's notes" : "Notes for this day"} />
+              </div>
+            ) : null}
           </div>
           {withBacklog ? (
             <div className="lg:sticky lg:top-6 lg:self-start">

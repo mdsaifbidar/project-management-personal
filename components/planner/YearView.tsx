@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import Link from "next/link";
 import { COLORS } from "@/lib/constants";
 import { addMonths, diffDays, fromKey, isoToKey, monthGrid, todayKey } from "@/lib/dates";
-import { calendarEntries } from "@/lib/selectors";
+import { calendarEntries, noteHasContent, noteSummary } from "@/lib/selectors";
 import { useStore } from "@/lib/store";
 import { cn, projectProgress } from "@/lib/utils";
 
@@ -29,7 +29,7 @@ export default function YearView({
   onDayClick: (day: string) => void;
   onMonthClick: (monthKey: string) => void;
 }) {
-  const { items, projects, settings } = useStore();
+  const { items, projects, settings, state } = useStore();
   const today = todayKey();
   const from = `${year}-01-01`;
   const to = `${year}-12-31`;
@@ -79,15 +79,19 @@ export default function YearView({
                     <button
                       key={d}
                       onClick={() => onDayClick(d)}
-                      title={`${d}: ${activity.get(d) ?? 0} items`}
+                      title={`${d}: ${activity.get(d) ?? 0} items${noteHasContent(state.notes[d]) ? ` · 📝 ${noteSummary(state.notes[d])}` : ""}`}
+                      data-has-note={noteHasContent(state.notes[d]) || undefined}
                       className={cn(
-                        "flex aspect-square items-center justify-center rounded-[4px] text-[10px] tabular-nums leading-none transition hover:ring-1 hover:ring-stone-500",
+                        "relative flex aspect-square items-center justify-center rounded-[4px] text-[10px] tabular-nums leading-none transition hover:ring-1 hover:ring-stone-500",
                         HEAT[level(activity.get(d) ?? 0)],
                         level(activity.get(d) ?? 0) >= 3 ? "text-white dark:text-stone-900" : "text-stone-500 dark:text-stone-400",
                         d === today && "font-bold ring-2 ring-rose-500"
                       )}
                     >
                       {fromKey(d).getDate()}
+                      {noteHasContent(state.notes[d]) ? (
+                        <span aria-hidden className="absolute right-[2px] top-[2px] h-[5px] w-[5px] rounded-full bg-amber-500 ring-1 ring-white dark:ring-stone-900" />
+                      ) : null}
                     </button>
                   ) : (
                     <span key={d} />

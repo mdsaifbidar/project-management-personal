@@ -9,6 +9,7 @@ import { useUI } from "@/lib/ui";
 import { useActions } from "@/lib/useActions";
 import { cn } from "@/lib/utils";
 import { PRIORITY_DOT } from "../Badge";
+import NoteMarker from "./NoteMarker";
 
 const MAX_CHIPS = 3;
 
@@ -79,6 +80,7 @@ export default function MonthView({
               )}
             >
               <div className="mb-1 flex items-center justify-between">
+                <div className="flex min-w-0 items-center gap-0.5">
                 <button
                   onClick={() => onDayClick(d)}
                   className={cn(
@@ -92,6 +94,8 @@ export default function MonthView({
                 >
                   {fromKey(d).getDate()}
                 </button>
+                <NoteMarker dateKey={d} />
+                </div>
                 <div className="flex items-center gap-1">
                   {load > 0 ? (
                     <span className={cn("hidden text-[10px] tabular-nums sm:inline", heavy ? "text-rose-500" : "text-stone-400")}>
@@ -100,7 +104,9 @@ export default function MonthView({
                   ) : null}
                   <button
                     onClick={() => openNew({ type: "TASK", status: "NEXT", scheduledDate: d })}
-                    className="hidden h-5 w-5 items-center justify-center rounded text-stone-400 hover:bg-stone-200 hover:text-stone-700 group-hover:inline-flex dark:hover:bg-stone-700"
+                    // Always in the layout on desktop (fades in, never shifts the row);
+                    // absent on phones, where a tap's "hover" used to pop it in under the finger.
+                    className="hidden h-5 w-5 items-center justify-center rounded text-stone-400 opacity-0 transition hover:bg-stone-200 hover:text-stone-700 focus-visible:opacity-100 group-hover:opacity-100 dark:hover:bg-stone-700 sm:inline-flex"
                     aria-label="Add on this day"
                   >
                     +
