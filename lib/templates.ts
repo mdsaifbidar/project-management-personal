@@ -1,0 +1,108 @@
+import { Template } from "./types";
+
+/** Built-in project templates. Your own live in Settings → Templates. */
+export const BUILTIN_TEMPLATES: Template[] = [
+  {
+    id: "tpl-launch",
+    name: "Product launch",
+    description: "Ship a small product in four weeks.",
+    builtin: true,
+    project: {
+      goal: "Launch publicly and get the first 100 users.",
+      successMetric: "100 sign-ups in the first week.",
+      priority: "HIGH",
+      color: "violet",
+      durationDays: 28,
+    },
+    tasks: [
+      { title: "Define the one-sentence pitch", offsetDays: 0, estimatedMinutes: 30, priority: "HIGH" },
+      { title: "Build MVP", offsetDays: 1, estimatedMinutes: 240, priority: "HIGH",
+        checklist: ["Core flow", "Auth / onboarding", "Payments", "Analytics"] },
+      { title: "Landing page", offsetDays: 10, estimatedMinutes: 120,
+        checklist: ["Headline + hero", "Screenshots", "Pricing", "FAQ"] },
+      { title: "Beta with 5 users", offsetDays: 14, estimatedMinutes: 90 },
+      { title: "Write launch post", offsetDays: 21, estimatedMinutes: 60 },
+      { title: "Launch on Product Hunt / HN / Reddit", offsetDays: 27, estimatedMinutes: 60, priority: "HIGH" },
+    ],
+  },
+  {
+    id: "tpl-job-search",
+    name: "Job search",
+    description: "A focused two-week job-hunting sprint.",
+    builtin: true,
+    project: {
+      goal: "Land 3 interviews.",
+      successMetric: "3 interviews scheduled.",
+      priority: "HIGH",
+      color: "indigo",
+      durationDays: 14,
+    },
+    tasks: [
+      { title: "Update CV and LinkedIn", offsetDays: 0, estimatedMinutes: 90, priority: "HIGH" },
+      { title: "Shortlist 20 companies", offsetDays: 1, estimatedMinutes: 60 },
+      { title: "Apply to 5 roles", offsetDays: 2, estimatedMinutes: 120 },
+      { title: "Reach out to 5 people for referrals", offsetDays: 3, estimatedMinutes: 45 },
+      { title: "Mock interview practice", offsetDays: 7, estimatedMinutes: 60 },
+      { title: "Follow up on applications", offsetDays: 10, estimatedMinutes: 30 },
+    ],
+  },
+  {
+    id: "tpl-learning",
+    name: "Learning plan",
+    description: "Learn a new skill in 30 days.",
+    builtin: true,
+    project: {
+      goal: "Build one real thing with the new skill.",
+      successMetric: "Finished project published.",
+      priority: "MEDIUM",
+      color: "teal",
+      durationDays: 30,
+    },
+    tasks: [
+      { title: "Pick resources and a capstone project", offsetDays: 0, estimatedMinutes: 45 },
+      { title: "Week 1: fundamentals", offsetDays: 1, estimatedMinutes: 300 },
+      { title: "Week 2: guided build", offsetDays: 8, estimatedMinutes: 300 },
+      { title: "Week 3: capstone", offsetDays: 15, estimatedMinutes: 360 },
+      { title: "Publish and write what you learned", offsetDays: 28, estimatedMinutes: 90 },
+    ],
+  },
+  {
+    id: "tpl-content",
+    name: "Content sprint",
+    description: "Plan, write and ship a batch of posts.",
+    builtin: true,
+    project: {
+      goal: "Publish 4 posts this month.",
+      successMetric: "4 posts live.",
+      priority: "MEDIUM",
+      color: "orange",
+      durationDays: 30,
+    },
+    tasks: [
+      { title: "Brainstorm 10 topics", offsetDays: 0, estimatedMinutes: 30 },
+      { title: "Draft post 1", offsetDays: 2, estimatedMinutes: 90 },
+      { title: "Draft post 2", offsetDays: 9, estimatedMinutes: 90 },
+      { title: "Draft post 3", offsetDays: 16, estimatedMinutes: 90 },
+      { title: "Draft post 4", offsetDays: 23, estimatedMinutes: 90 },
+    ],
+  },
+  {
+    id: "tpl-event",
+    name: "Event / trip",
+    description: "Plan an event or a trip end to end.",
+    builtin: true,
+    project: {
+      goal: "Everything booked, nothing forgotten.",
+      priority: "MEDIUM",
+      color: "emerald",
+      durationDays: 21,
+    },
+    tasks: [
+      { title: "Set budget and date", offsetDays: 0, estimatedMinutes: 30 },
+      { title: "Book venue / travel", offsetDays: 2, estimatedMinutes: 60 },
+      { title: "Invite people / book stays", offsetDays: 5, estimatedMinutes: 45 },
+      { title: "Packing list / run sheet", offsetDays: 18, estimatedMinutes: 30,
+        checklist: ["Documents", "Chargers", "Clothes", "Meds"] },
+    ],
+  },
+];
